@@ -1,0 +1,59 @@
+# name: Go
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# env:
+#   ELASTIC_BEANSTALK_ENVIRONMENT: go-app-env
+#   ELASTIC_BEANSTALK_NAME: go-app
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-22.04
+#     strategy:
+#       matrix:
+#         go-version: [1.18, 1.19, 1.20, 1.21, 1.22, 1.23]
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#       - name: Set up Go
+#         uses: actions/setup-go@v5
+#         with:
+#           go-version: ${{ matrix.go-version }}
+#       - name: Install dependencies
+#         run: go get .
+#       - name: Build
+#         run: go build -o app
+#       - name: Zip app for Elastic Beanstalk
+#         run: zip ${{github.run_id}}.zip app
+#       - name: Upload Artifacts
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: ${{github.run_id}}
+#           path: ${{github.run_id}}.zip
+
+#   deploy:
+#     runs-on: ubuntu-22.04
+#     needs: build
+#     steps:
+#       - name: Download Artifacts
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: ${{github.run_id}}
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ secrets.AWS_REGION }}
+#       - name: Deploy to Elastic Beanstalk
+#         run: |
+#           aws s3 cp ${{github.run_id}}.zip s3://elasticbeanstalk-${{ secrets.AWS_REGION }}-${{ secrets.AWS_ACCOUNT_ID }}/go-app/
+#           aws elasticbeanstalk create-application-version --application-name $ELASTIC_BEANSTALK_NAME --version-label ${{ github.run_id }} --source-bundle S3Bucket="elasticbeanstalk-${{ secrets.AWS_REGION }}-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="go-app/${{github.run_id}}.zip"
+#           aws elasticbeanstalk update-environment --application-name $ELASTIC_BEANSTALK_NAME --environment-name $env.ELASTIC_BEANSTALK_ENVIRONMENT --version-label ${{ github.run_id }}
+#           aws elasticbeanstalk wait environment-updated --application-name $ELASTIC_BEANSTALK_NAME --environment-name $env.ELASTIC_BEANSTALK_ENVIRONMENT
