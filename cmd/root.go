@@ -3,18 +3,20 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
 
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/TranTheTuan/go-template/config"
 )
 
 const (
-	DBHost = "db-host"
-	DBPort = "db-port"
-	DBUser = "db-user"
-	DBPass = "db-pass"
-	DBName = "db-name"
+	DBHost = "db_host"
+	DBPort = "db_port"
+	DBUser = "db_user"
+	DBPass = "db_password"
+	DBName = "db_name"
 )
 
 var (
@@ -45,19 +47,23 @@ func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
-		home, err := os.UserHomeDir()
+		home, err := homedir.Dir()
 		cobra.CheckErr(err)
 
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".cobra")
+		viper.SetConfigName("config")
 	}
 
-	viper.SetEnvPrefix("app")
-	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		fmt.Println("Can't read config:", err)
+		os.Exit(1)
+	}
+
+	if err := viper.Unmarshal(&config.AppConfigInstance); err != nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
