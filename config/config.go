@@ -1,15 +1,15 @@
 package config
 
 type AppConfig struct {
-	DBConfig
+	DBConfig `mapstructure:",squash"`
 }
 
 type DBConfig struct {
-	Host     string `mapstructure:"DB_HOST"`
-	Database string `mapstructure:"DB_NAME"`
-	Username string `mapstructure:"DB_USER"`
-	Password string `mapstructure:"DB_PASSWORD"`
-	Port     string `mapstructure:"DB_PORT"`
+	Host     string `mapstructure:"MOVIEZ_DB_HOST"`
+	Database string `mapstructure:"MOVIEZ_DB_NAME"`
+	Username string `mapstructure:"MOVIEZ_DB_USER"`
+	Password string `mapstructure:"MOVIEZ_DB_PASSWORD"`
+	Port     string `mapstructure:"MOVIEZ_DB_PORT"`
 }
 
-var AppConfigInstance DBConfig
+var AppConfigInstance AppConfig

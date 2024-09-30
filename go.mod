@@ -1,4 +1,4 @@
-module github.com/TranTheTuan/go-template
+module github.com/MoviezCenter/moviez
 
 go 1.23.1
 

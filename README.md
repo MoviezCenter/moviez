@@ -1,2 +1,2 @@
 # go-template
-Go project layout template
+Movie rating app
