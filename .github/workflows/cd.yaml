@@ -31,7 +31,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{github.run_id}}-${{github.sha}}
+          name: ${{github.run_id}}-${{github.sha}}-go-${{ matrix.go-version }}
           path: ${{github.run_id}}.zip
 
   deploy:
@@ -42,7 +42,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{github.run_id}}-${{github.sha}}
+          name: ${{github.run_id}}-${{github.sha}}-go-${{ matrix.go-version }}
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
