@@ -1,6 +1,8 @@
 package main
 
-import "github.com/TranTheTuan/go-template/cmd"
+import (
+	"github.com/MoviezCenter/moviez/cmd"
+)
 
 func main() {
 	cmd.Execute()

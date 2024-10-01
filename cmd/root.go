@@ -3,20 +3,13 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/TranTheTuan/go-template/config"
-)
-
-const (
-	DBHost = "db_host"
-	DBPort = "db_port"
-	DBUser = "db_user"
-	DBPass = "db_password"
-	DBName = "db_name"
+	"github.com/MoviezCenter/moviez/config"
 )
 
 var (
@@ -40,7 +33,6 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
-	initConfiguration()
 }
 
 func initConfig() {
@@ -55,6 +47,9 @@ func initConfig() {
 		viper.SetConfigName("config")
 	}
 
+	viper.AddConfigPath(".")
+	viper.SetEnvPrefix("moviez")
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -68,18 +63,4 @@ func initConfig() {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
-}
-
-func initConfiguration() {
-	rootCmd.PersistentFlags().String(DBHost, "localhost", "Database host")
-	rootCmd.PersistentFlags().String(DBPort, "5432", "Database port")
-	rootCmd.PersistentFlags().String(DBUser, "postgres", "Database user")
-	rootCmd.PersistentFlags().String(DBPass, "postgres", "Database password")
-	rootCmd.PersistentFlags().String(DBName, "postgres", "Database name")
-
-	viper.BindPFlag(DBHost, rootCmd.PersistentFlags().Lookup(DBHost))
-	viper.BindPFlag(DBPort, rootCmd.PersistentFlags().Lookup(DBPort))
-	viper.BindPFlag(DBUser, rootCmd.PersistentFlags().Lookup(DBUser))
-	viper.BindPFlag(DBPass, rootCmd.PersistentFlags().Lookup(DBPass))
-	viper.BindPFlag(DBName, rootCmd.PersistentFlags().Lookup(DBName))
 }
