@@ -11,6 +11,7 @@ on:
 env:
   ELASTIC_BEANSTALK_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'moviez-dev' || 'moviez-prod' }}
   ELASTIC_BEANSTALK_NAME: moviez
+  AWS_REGION: us-east-1
 
 jobs:
   build:
