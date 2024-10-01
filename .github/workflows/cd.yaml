@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: go get .
       - name: Build
-        run: GOARCH=amd64 GOOS=linux go build -o bin/application
+        run: GOARCH=amd64 GOOS=linux go build -o bin/application .
       - name: Zip app for Elastic Beanstalk
         run: zip -r ${{github.run_id}}.zip bin Procfile
       - name: Upload Artifacts
@@ -51,7 +51,7 @@ jobs:
           aws s3api head-bucket --bucket elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }} || aws s3 mb s3://elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}
           
           # Continue with the existing commands
-          aws s3 cp ${{github.run_id}}.zip s3://elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}/moviez/
-          aws elasticbeanstalk create-application-version --application-name $ELASTIC_BEANSTALK_NAME --version-label ${{ github.run_id }} --source-bundle S3Bucket="elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}",S3Key="moviez/${{github.run_id}}.zip"
-          aws elasticbeanstalk update-environment --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENVIRONMENT --version-label ${{ github.run_id }}
+          aws s3 cp ${{github.run_id}}.zip s3://elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}/$ELASTIC_BEANSTALK_ENVIRONMENT/
+          aws elasticbeanstalk create-application-version --application-name $ELASTIC_BEANSTALK_NAME --version-label ${{ github.sha }} --source-bundle S3Bucket="elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}",S3Key="$ELASTIC_BEANSTALK_ENVIRONMENT/${{github.run_id}}.zip"
+          aws elasticbeanstalk update-environment --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENVIRONMENT --version-label ${{ github.sha }}
           aws elasticbeanstalk wait environment-updated --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENVIRONMENT
