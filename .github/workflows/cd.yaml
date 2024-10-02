@@ -1,9 +1,12 @@
 name: CD
 
 on:
-  push:
+  pull_request:
     branches:
-      - test/cicd-pipeline
+      - dev
+  push:
+    tags:
+      - 'v*'
 
 env:
   ELASTIC_BEANSTALK_ENVIRONMENT: moviez-env
@@ -33,6 +36,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
+    environment: ${{ github.event_name == 'pull_request' && 'dev' || 'production' }}
     needs: build
     steps:
       - name: Download Artifacts
