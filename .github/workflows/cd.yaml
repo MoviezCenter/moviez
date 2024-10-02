@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: GOARCH=amd64 GOOS=linux go build -o bin/application .
       - name: Zip app for Elastic Beanstalk
-        run: zip -r ${{github.run_id}}.zip bin Procfile
+        run: zip -r ${{github.run_id}}.zip .
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
