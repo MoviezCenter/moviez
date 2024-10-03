@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
+
+	"github.com/MoviezCenter/moviez/config"
 )
 
 var httpCmd = &cobra.Command{
@@ -29,12 +32,12 @@ var httpCmd = &cobra.Command{
 		}).Methods(http.MethodGet)
 
 		srv := http.Server{
-			Addr:    ":8080",
+			Addr:    fmt.Sprintf(":%s", config.AppConfigInstance.HTTPPort),
 			Handler: r,
 		}
 
 		go func() {
-			log.Println("server is listing at port 8080")
+			log.Printf("server is listing at port %s\n", config.AppConfigInstance.HTTPPort)
 			if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
 				log.Fatalf("server returned error: %s", err.Error())
 			}

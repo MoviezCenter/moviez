@@ -9,7 +9,7 @@ on:
       - 'v*'
 
 env:
-  ELASTIC_BEANSTALK_ENVIRONMENT: moviez-env
+  ELASTIC_BEANSTALK_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'moviez-dev' || 'moviez-prod' }}
   ELASTIC_BEANSTALK_NAME: moviez
 
 jobs:
