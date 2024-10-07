@@ -17,7 +17,7 @@ const (
 	DBPort     = "MOVIEZ_DB_PORT"
 	DBPassword = "MOVIEZ_DB_PASSWORD"
 	DBUser     = "MOVIEZ_DB_USER"
-	DBHttpPort = "PORT"
+	DBHttpPort = "MOVIEZ_HTTP_PORT"
 )
 
 var (
@@ -47,7 +47,7 @@ func init() {
 	viper.BindEnv(DBPassword)
 	viper.BindEnv(DBName)
 	viper.BindEnv(DBPort)
-	viper.BindEnv(DBHttpPort)
+	viper.BindEnv(DBHttpPort, "PORT")
 }
 
 func initConfig() {
