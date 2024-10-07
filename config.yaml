@@ -1,9 +1,0 @@
-# app config
-HTTP_PORT: 8080
-
-# DB config
-MOVIEZ_DB_HOST: localhost
-MOVIEZ_DB_PORT: 5433
-MOVIEZ_DB_USER: admin1
-MOVIEZ_DB_PASSWORD: 123457
-MOVIEZ_DB_NAME: testdb1

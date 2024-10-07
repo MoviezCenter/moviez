@@ -36,6 +36,11 @@ var httpCmd = &cobra.Command{
 			Handler: r,
 		}
 
+		_, err := config.InitDB(config.AppConfigInstance.DBConfig)
+		if err != nil {
+			log.Fatalf("error connecting to database: %s", err.Error())
+		}
+
 		go func() {
 			log.Printf("server is listing at port %s\n", config.AppConfigInstance.HTTPPort)
 			if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
