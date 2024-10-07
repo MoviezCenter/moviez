@@ -5,11 +5,19 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
 	"github.com/MoviezCenter/moviez/config"
+)
+
+const (
+	DBHost     = "MOVIEZ_DB_HOST"
+	DBName     = "MOVIEZ_DB_NAME"
+	DBPort     = "MOVIEZ_DB_PORT"
+	DBPassword = "MOVIEZ_DB_PASSWORD"
+	DBUser     = "MOVIEZ_DB_USER"
+	DBHttpPort = "MOVIEZ_HTTP_PORT"
 )
 
 var (
@@ -33,30 +41,19 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
+
+	viper.BindEnv(DBHost)
+	viper.BindEnv(DBUser)
+	viper.BindEnv(DBPassword)
+	viper.BindEnv(DBName)
+	viper.BindEnv(DBPort)
+	viper.BindEnv(DBHttpPort)
 }
 
 func initConfig() {
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
-	} else {
-		home, err := homedir.Dir()
-		cobra.CheckErr(err)
-
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName("config")
-	}
-
-	viper.AddConfigPath(".")
 	viper.SetEnvPrefix("moviez")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-		fmt.Println("Can't read config:", err)
-		os.Exit(1)
-	}
 
 	if err := viper.Unmarshal(&config.AppConfigInstance); err != nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
