@@ -17,7 +17,7 @@ const (
 	DBPort     = "MOVIEZ_DB_PORT"
 	DBPassword = "MOVIEZ_DB_PASSWORD"
 	DBUser     = "MOVIEZ_DB_USER"
-	DBHttpPort = "MOVIEZ_HTTP_PORT"
+	DBHttpPort = "PORT"
 )
 
 var (

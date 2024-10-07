@@ -1,7 +1,7 @@
 package config
 
 type AppConfig struct {
-	HTTPPort string `mapstructure:"MOVIEZ_HTTP_PORT"`
+	HTTPPort string `mapstructure:"PORT"`
 	DBConfig `mapstructure:",squash"`
 }
 
