@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 
+	"github.com/MoviezCenter/moviez/ent"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -30,4 +31,14 @@ func InitDB(dbConfig DBConfig) (*sqlx.DB, error) {
 	}
 
 	return db, nil
+}
+
+func InitEntClient(dbConfig DBConfig) (*ent.Client, error) {
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=require", dbConfig.Host, dbConfig.Port, dbConfig.Username, dbConfig.Password, dbConfig.Database)
+	client, err := ent.Open("postgres", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }
