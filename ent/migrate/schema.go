@@ -12,7 +12,7 @@ var (
 	GenresColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "type_id", Type: field.TypeUint32},
+		{Name: "type_id", Type: field.TypeInt32},
 	}
 	// GenresTable holds the schema information for the "genres" table.
 	GenresTable = &schema.Table{

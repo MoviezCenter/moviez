@@ -19,7 +19,7 @@ type Genre struct {
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// TypeID holds the value of the "type_id" field.
-	TypeID uint32 `json:"type_id,omitempty"`
+	TypeID int32 `json:"type_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GenreQuery when eager-loading is set.
 	Edges        GenreEdges `json:"edges"`
@@ -84,7 +84,7 @@ func (ge *Genre) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field type_id", values[i])
 			} else if value.Valid {
-				ge.TypeID = uint32(value.Int64)
+				ge.TypeID = int32(value.Int64)
 			}
 		default:
 			ge.selectValues.Set(columns[i], values[i])

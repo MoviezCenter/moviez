@@ -40,7 +40,7 @@ type GenreMutation struct {
 	typ           string
 	id            *int
 	name          *string
-	type_id       *uint32
+	type_id       *int32
 	addtype_id    *int32
 	clearedFields map[string]struct{}
 	movies        map[int]struct{}
@@ -186,13 +186,13 @@ func (m *GenreMutation) ResetName() {
 }
 
 // SetTypeID sets the "type_id" field.
-func (m *GenreMutation) SetTypeID(u uint32) {
-	m.type_id = &u
+func (m *GenreMutation) SetTypeID(i int32) {
+	m.type_id = &i
 	m.addtype_id = nil
 }
 
 // TypeID returns the value of the "type_id" field in the mutation.
-func (m *GenreMutation) TypeID() (r uint32, exists bool) {
+func (m *GenreMutation) TypeID() (r int32, exists bool) {
 	v := m.type_id
 	if v == nil {
 		return
@@ -203,7 +203,7 @@ func (m *GenreMutation) TypeID() (r uint32, exists bool) {
 // OldTypeID returns the old "type_id" field's value of the Genre entity.
 // If the Genre object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GenreMutation) OldTypeID(ctx context.Context) (v uint32, err error) {
+func (m *GenreMutation) OldTypeID(ctx context.Context) (v int32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTypeID is only allowed on UpdateOne operations")
 	}
@@ -217,12 +217,12 @@ func (m *GenreMutation) OldTypeID(ctx context.Context) (v uint32, err error) {
 	return oldValue.TypeID, nil
 }
 
-// AddTypeID adds u to the "type_id" field.
-func (m *GenreMutation) AddTypeID(u int32) {
+// AddTypeID adds i to the "type_id" field.
+func (m *GenreMutation) AddTypeID(i int32) {
 	if m.addtype_id != nil {
-		*m.addtype_id += u
+		*m.addtype_id += i
 	} else {
-		m.addtype_id = &u
+		m.addtype_id = &i
 	}
 }
 
@@ -378,7 +378,7 @@ func (m *GenreMutation) SetField(name string, value ent.Value) error {
 		m.SetName(v)
 		return nil
 	case genre.FieldTypeID:
-		v, ok := value.(uint32)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

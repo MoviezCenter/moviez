@@ -27,8 +27,8 @@ func (gc *GenreCreate) SetName(s string) *GenreCreate {
 }
 
 // SetTypeID sets the "type_id" field.
-func (gc *GenreCreate) SetTypeID(u uint32) *GenreCreate {
-	gc.mutation.SetTypeID(u)
+func (gc *GenreCreate) SetTypeID(i int32) *GenreCreate {
+	gc.mutation.SetTypeID(i)
 	return gc
 }
 
@@ -118,7 +118,7 @@ func (gc *GenreCreate) createSpec() (*Genre, *sqlgraph.CreateSpec) {
 		_node.Name = value
 	}
 	if value, ok := gc.mutation.TypeID(); ok {
-		_spec.SetField(genre.FieldTypeID, field.TypeUint32, value)
+		_spec.SetField(genre.FieldTypeID, field.TypeInt32, value)
 		_node.TypeID = value
 	}
 	if nodes := gc.mutation.MoviesIDs(); len(nodes) > 0 {

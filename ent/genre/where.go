@@ -59,7 +59,7 @@ func Name(v string) predicate.Genre {
 }
 
 // TypeID applies equality check predicate on the "type_id" field. It's identical to TypeIDEQ.
-func TypeID(v uint32) predicate.Genre {
+func TypeID(v int32) predicate.Genre {
 	return predicate.Genre(sql.FieldEQ(FieldTypeID, v))
 }
 
@@ -129,42 +129,42 @@ func NameContainsFold(v string) predicate.Genre {
 }
 
 // TypeIDEQ applies the EQ predicate on the "type_id" field.
-func TypeIDEQ(v uint32) predicate.Genre {
+func TypeIDEQ(v int32) predicate.Genre {
 	return predicate.Genre(sql.FieldEQ(FieldTypeID, v))
 }
 
 // TypeIDNEQ applies the NEQ predicate on the "type_id" field.
-func TypeIDNEQ(v uint32) predicate.Genre {
+func TypeIDNEQ(v int32) predicate.Genre {
 	return predicate.Genre(sql.FieldNEQ(FieldTypeID, v))
 }
 
 // TypeIDIn applies the In predicate on the "type_id" field.
-func TypeIDIn(vs ...uint32) predicate.Genre {
+func TypeIDIn(vs ...int32) predicate.Genre {
 	return predicate.Genre(sql.FieldIn(FieldTypeID, vs...))
 }
 
 // TypeIDNotIn applies the NotIn predicate on the "type_id" field.
-func TypeIDNotIn(vs ...uint32) predicate.Genre {
+func TypeIDNotIn(vs ...int32) predicate.Genre {
 	return predicate.Genre(sql.FieldNotIn(FieldTypeID, vs...))
 }
 
 // TypeIDGT applies the GT predicate on the "type_id" field.
-func TypeIDGT(v uint32) predicate.Genre {
+func TypeIDGT(v int32) predicate.Genre {
 	return predicate.Genre(sql.FieldGT(FieldTypeID, v))
 }
 
 // TypeIDGTE applies the GTE predicate on the "type_id" field.
-func TypeIDGTE(v uint32) predicate.Genre {
+func TypeIDGTE(v int32) predicate.Genre {
 	return predicate.Genre(sql.FieldGTE(FieldTypeID, v))
 }
 
 // TypeIDLT applies the LT predicate on the "type_id" field.
-func TypeIDLT(v uint32) predicate.Genre {
+func TypeIDLT(v int32) predicate.Genre {
 	return predicate.Genre(sql.FieldLT(FieldTypeID, v))
 }
 
 // TypeIDLTE applies the LTE predicate on the "type_id" field.
-func TypeIDLTE(v uint32) predicate.Genre {
+func TypeIDLTE(v int32) predicate.Genre {
 	return predicate.Genre(sql.FieldLTE(FieldTypeID, v))
 }
 

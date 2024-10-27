@@ -1,9 +1,7 @@
 run-http:
-	export $(shell cat .env) && \
 	go run main.go http
 
 run-grpc:
-	export $(shell cat .env) && \
 	go run main.go grpc
 
 ent-gen:

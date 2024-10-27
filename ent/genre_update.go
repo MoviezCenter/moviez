@@ -43,23 +43,23 @@ func (gu *GenreUpdate) SetNillableName(s *string) *GenreUpdate {
 }
 
 // SetTypeID sets the "type_id" field.
-func (gu *GenreUpdate) SetTypeID(u uint32) *GenreUpdate {
+func (gu *GenreUpdate) SetTypeID(i int32) *GenreUpdate {
 	gu.mutation.ResetTypeID()
-	gu.mutation.SetTypeID(u)
+	gu.mutation.SetTypeID(i)
 	return gu
 }
 
 // SetNillableTypeID sets the "type_id" field if the given value is not nil.
-func (gu *GenreUpdate) SetNillableTypeID(u *uint32) *GenreUpdate {
-	if u != nil {
-		gu.SetTypeID(*u)
+func (gu *GenreUpdate) SetNillableTypeID(i *int32) *GenreUpdate {
+	if i != nil {
+		gu.SetTypeID(*i)
 	}
 	return gu
 }
 
-// AddTypeID adds u to the "type_id" field.
-func (gu *GenreUpdate) AddTypeID(u int32) *GenreUpdate {
-	gu.mutation.AddTypeID(u)
+// AddTypeID adds i to the "type_id" field.
+func (gu *GenreUpdate) AddTypeID(i int32) *GenreUpdate {
+	gu.mutation.AddTypeID(i)
 	return gu
 }
 
@@ -144,10 +144,10 @@ func (gu *GenreUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(genre.FieldName, field.TypeString, value)
 	}
 	if value, ok := gu.mutation.TypeID(); ok {
-		_spec.SetField(genre.FieldTypeID, field.TypeUint32, value)
+		_spec.SetField(genre.FieldTypeID, field.TypeInt32, value)
 	}
 	if value, ok := gu.mutation.AddedTypeID(); ok {
-		_spec.AddField(genre.FieldTypeID, field.TypeUint32, value)
+		_spec.AddField(genre.FieldTypeID, field.TypeInt32, value)
 	}
 	if gu.mutation.MoviesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -229,23 +229,23 @@ func (guo *GenreUpdateOne) SetNillableName(s *string) *GenreUpdateOne {
 }
 
 // SetTypeID sets the "type_id" field.
-func (guo *GenreUpdateOne) SetTypeID(u uint32) *GenreUpdateOne {
+func (guo *GenreUpdateOne) SetTypeID(i int32) *GenreUpdateOne {
 	guo.mutation.ResetTypeID()
-	guo.mutation.SetTypeID(u)
+	guo.mutation.SetTypeID(i)
 	return guo
 }
 
 // SetNillableTypeID sets the "type_id" field if the given value is not nil.
-func (guo *GenreUpdateOne) SetNillableTypeID(u *uint32) *GenreUpdateOne {
-	if u != nil {
-		guo.SetTypeID(*u)
+func (guo *GenreUpdateOne) SetNillableTypeID(i *int32) *GenreUpdateOne {
+	if i != nil {
+		guo.SetTypeID(*i)
 	}
 	return guo
 }
 
-// AddTypeID adds u to the "type_id" field.
-func (guo *GenreUpdateOne) AddTypeID(u int32) *GenreUpdateOne {
-	guo.mutation.AddTypeID(u)
+// AddTypeID adds i to the "type_id" field.
+func (guo *GenreUpdateOne) AddTypeID(i int32) *GenreUpdateOne {
+	guo.mutation.AddTypeID(i)
 	return guo
 }
 
@@ -360,10 +360,10 @@ func (guo *GenreUpdateOne) sqlSave(ctx context.Context) (_node *Genre, err error
 		_spec.SetField(genre.FieldName, field.TypeString, value)
 	}
 	if value, ok := guo.mutation.TypeID(); ok {
-		_spec.SetField(genre.FieldTypeID, field.TypeUint32, value)
+		_spec.SetField(genre.FieldTypeID, field.TypeInt32, value)
 	}
 	if value, ok := guo.mutation.AddedTypeID(); ok {
-		_spec.AddField(genre.FieldTypeID, field.TypeUint32, value)
+		_spec.AddField(genre.FieldTypeID, field.TypeInt32, value)
 	}
 	if guo.mutation.MoviesCleared() {
 		edge := &sqlgraph.EdgeSpec{

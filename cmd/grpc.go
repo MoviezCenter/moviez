@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"net"
 	"os"
@@ -12,6 +13,8 @@ import (
 
 	"github.com/MoviezCenter/moviez/config"
 	"github.com/MoviezCenter/moviez/internal/controller"
+	"github.com/MoviezCenter/moviez/internal/repository"
+	"github.com/MoviezCenter/moviez/internal/service"
 	moviepb "github.com/MoviezCenter/pb-contracts-go/movie"
 )
 
@@ -30,14 +33,28 @@ func runGrpcCmd(cmd *cobra.Command, args []string) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	grpcServer := grpc.NewServer()
-	movieServiceServer := controller.NewMovieServiceServer()
-	moviepb.RegisterMovieServiceServer(grpcServer, movieServiceServer)
-
-	_, err := config.InitDB(config.AppConfigInstance.DBConfig)
+	entClient, err := config.InitEntClient(config.AppConfigInstance.DBConfig)
 	if err != nil {
 		log.Fatalf("error connecting to database: %s", err.Error())
 	}
+	defer entClient.Close()
+
+	if err := entClient.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+
+	// repository
+	movieRepo := repository.NewMovieRepo(entClient)
+
+	// service
+	movieService := service.NewMovieService(movieRepo)
+
+	// controller
+	movieServiceServer := controller.NewMovieServiceServer(movieService)
+
+	// register grpc server
+	grpcServer := grpc.NewServer()
+	moviepb.RegisterMovieServiceServer(grpcServer, movieServiceServer)
 
 	lis, err := net.Listen("tcp", ":8081")
 	if err != nil {
