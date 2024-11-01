@@ -1,40 +1,77 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
-	"fmt"
+	"context"
+	"log"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+
+	"github.com/MoviezCenter/moviez/config"
+	"github.com/MoviezCenter/moviez/internal/controller"
+	"github.com/MoviezCenter/moviez/internal/repository"
+	"github.com/MoviezCenter/moviez/internal/service"
+	moviepb "github.com/MoviezCenter/pb-contracts-go/movie"
 )
 
 // grpcCmd represents the grpc command
 var grpcCmd = &cobra.Command{
 	Use:   "grpc",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("grpc called")
-	},
+	Short: "Start gRPC server",
+	Run:   runGrpcCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(grpcCmd)
+}
 
-	// Here you will define your flags and configuration settings.
+func runGrpcCmd(cmd *cobra.Command, args []string) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// grpcCmd.PersistentFlags().String("foo", "", "A help for foo")
+	entClient, err := config.InitEntClient(config.AppConfigInstance.DBConfig)
+	if err != nil {
+		log.Fatalf("error connecting to database: %s", err.Error())
+	}
+	defer entClient.Close()
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// grpcCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	if err := entClient.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+
+	// repository
+	movieRepo := repository.NewMovieRepo(entClient)
+
+	// service
+	movieService := service.NewMovieService(movieRepo)
+
+	// controller
+	movieServiceServer := controller.NewMovieServiceServer(movieService)
+
+	// register grpc server
+	grpcServer := grpc.NewServer()
+	moviepb.RegisterMovieServiceServer(grpcServer, movieServiceServer)
+
+	lis, err := net.Listen("tcp", ":8081")
+	if err != nil {
+		log.Fatalf("error listing to tcp port 8081: %s", err.Error())
+	}
+
+	go func() {
+		log.Printf("grpc server is serving at port %s\n", "8081")
+		if err = grpcServer.Serve(lis); err != nil {
+			log.Fatalf("error starting grpc server: %s", err.Error())
+		}
+	}()
+
+	// Block till receiving the signal
+	<-c
+	grpcServer.GracefulStop()
+
+	log.Println("server gracefully shutdown")
+	os.Exit(0)
 }

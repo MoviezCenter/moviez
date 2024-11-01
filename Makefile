@@ -1,0 +1,11 @@
+run-http:
+	go run main.go http
+
+run-grpc:
+	go run main.go grpc
+
+ent-gen:
+	go generate ./ent
+
+ent-new:
+	go run -mod=mod entgo.io/ent/cmd/ent new $(Entity)
