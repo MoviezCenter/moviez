@@ -27,3 +27,14 @@ func (s *MovieServiceServer) GetMovieList(ctx context.Context, req *moviepb.GetM
 		Data: movies,
 	}, nil
 }
+
+func (s *MovieServiceServer) GetMovieDetail(ctx context.Context, req *moviepb.GetMovieDetailRequest) (*moviepb.GetMovieDetailResponse, error) {
+	movie, err := s.movieServie.GetMovieDetail(ctx, int(req.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &moviepb.GetMovieDetailResponse{
+		Data: movie,
+	}, nil
+}

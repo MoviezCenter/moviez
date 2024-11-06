@@ -10,6 +10,7 @@ import (
 
 type MovieService interface {
 	GetMovies(ctx context.Context, limit int, offset int) ([]*core.Movie, error)
+	GetMovieDetail(ctx context.Context, movieID int) (*core.Movie, error)
 }
 
 type movieService struct {
@@ -34,4 +35,13 @@ func (s *movieService) GetMovies(ctx context.Context, limit int, offset int) ([]
 	}
 
 	return res, nil
+}
+
+func (s *movieService) GetMovieDetail(ctx context.Context, movieID int) (*core.Movie, error) {
+	movie, err := s.movieRepo.GetMovieDetail(ctx, movieID)
+	if err != nil {
+		return nil, err
+	}
+
+	return model.ToProtoMovie(movie), nil
 }
