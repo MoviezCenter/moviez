@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"github.com/MoviezCenter/moviez/ent"
+	"github.com/MoviezCenter/moviez/ent/movie"
 )
 
 type MovieRepository interface {
 	GetMovies(ctx context.Context, limit int, offset int) ([]*ent.Movie, error)
+	GetMovieDetail(ctx context.Context, movieID int) (*ent.Movie, error)
 }
 
 type movieRepo struct {
@@ -34,4 +36,19 @@ func (r *movieRepo) GetMovies(ctx context.Context, limit int, offset int) ([]*en
 	}
 
 	return movies, nil
+}
+
+func (r *movieRepo) GetMovieDetail(ctx context.Context, movieID int) (*ent.Movie, error) {
+	movie, err := r.db.Movie.Query().
+		Where(movie.ID(movieID)).
+		WithGenres().
+		WithReviews(func(rq *ent.ReviewQuery) {
+			rq.Limit(10)
+		}).
+		First(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return movie, nil
 }
