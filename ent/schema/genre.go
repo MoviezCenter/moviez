@@ -15,7 +15,7 @@ type Genre struct {
 func (Genre) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name"),
-		field.Uint32("type_id"),
+		field.Int32("type_id"),
 	}
 }
 

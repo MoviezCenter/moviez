@@ -16,6 +16,7 @@ import (
 	"github.com/MoviezCenter/moviez/internal/repository"
 	"github.com/MoviezCenter/moviez/internal/service"
 	moviepb "github.com/MoviezCenter/pb-contracts-go/movie"
+	reviewpb "github.com/MoviezCenter/pb-contracts-go/review"
 )
 
 // grpcCmd represents the grpc command
@@ -45,16 +46,20 @@ func runGrpcCmd(cmd *cobra.Command, args []string) {
 
 	// repository
 	movieRepo := repository.NewMovieRepo(entClient)
+	reviewRepo := repository.NewReviewRepository(entClient)
 
 	// service
 	movieService := service.NewMovieService(movieRepo)
+	reviewService := service.NewReviewService(reviewRepo)
 
 	// controller
 	movieServiceServer := controller.NewMovieServiceServer(movieService)
+	reviewServiceServer := controller.NewReviewServiceServer(reviewService)
 
 	// register grpc server
 	grpcServer := grpc.NewServer()
 	moviepb.RegisterMovieServiceServer(grpcServer, movieServiceServer)
+	reviewpb.RegisterReviewServiceServer(grpcServer, reviewServiceServer)
 
 	lis, err := net.Listen("tcp", ":8081")
 	if err != nil {
