@@ -20,6 +20,7 @@ import (
 
 	"github.com/MoviezCenter/moviez/config"
 	moviepb "github.com/MoviezCenter/pb-contracts-go/movie"
+	reviewpb "github.com/MoviezCenter/pb-contracts-go/review"
 )
 
 var wait time.Duration = time.Second * 15
@@ -45,6 +46,11 @@ func runHttpCmd(cmd *cobra.Command, args []string) {
 	if err != nil {
 		panic(err)
 	}
+	err = reviewpb.RegisterReviewServiceHandlerFromEndpoint(context.Background(), pbMux, ":8081", grpcOpts)
+	if err != nil {
+		panic(err)
+	}
+
 	httpMux := mux.NewRouter()
 	httpMux.PathPrefix("/").Handler(pbMux)
 
