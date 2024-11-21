@@ -48,13 +48,25 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-      - name: Deploy to Elastic Beanstalk
-        run: |
-         # Create S3 bucket if it doesn't exist
-          aws s3api head-bucket --bucket elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }} || aws s3 mb s3://elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}
+      # - name: Deploy to Elastic Beanstalk
+      #   run: |
+      #    # Create S3 bucket if it doesn't exist
+      #     aws s3api head-bucket --bucket elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }} || aws s3 mb s3://elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}
           
-          # Continue with the existing commands
-          aws s3 cp ${{github.run_id}}.zip s3://elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}/$ELASTIC_BEANSTALK_ENVIRONMENT/
-          aws elasticbeanstalk create-application-version --application-name $ELASTIC_BEANSTALK_NAME --version-label ${{ github.sha }} --source-bundle S3Bucket="elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}",S3Key="$ELASTIC_BEANSTALK_ENVIRONMENT/${{github.run_id}}.zip"
-          aws elasticbeanstalk update-environment --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENVIRONMENT --version-label ${{ github.sha }}
-          aws elasticbeanstalk wait environment-updated --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENVIRONMENT
+      #     # Continue with the existing commands
+      #     aws s3 cp ${{github.run_id}}.zip s3://elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}/$ELASTIC_BEANSTALK_ENVIRONMENT/
+      #     aws elasticbeanstalk create-application-version --application-name $ELASTIC_BEANSTALK_NAME --version-label ${{ github.sha }} --source-bundle S3Bucket="elasticbeanstalk-${{ vars.AWS_REGION }}-${{ vars.AWS_ACCOUNT_ID }}",S3Key="$ELASTIC_BEANSTALK_ENVIRONMENT/${{github.run_id}}.zip"
+      #     aws elasticbeanstalk update-environment --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENVIRONMENT --version-label ${{ github.sha }}
+      #     aws elasticbeanstalk wait environment-updated --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENVIRONMENT
+      - name: Send notification to telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit:
+            Commit message: ${{ github.event.commits[0].message }}
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
