@@ -5,7 +5,7 @@ on:
     tags:
       - 'v*'
     branches:
-      - '*'
+      - '**'
 
 env:
   ELASTIC_BEANSTALK_ENVIRONMENT: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' && 'moviez-dev' || github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && 'moviez-prod' || 'moviez-prod' }}
